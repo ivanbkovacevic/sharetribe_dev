@@ -1,0 +1,53 @@
+{{~#*inline "format-money"~}}
+{{money-amount money}}
+{{money.currency}}
+{{~/inline~}}
+
+{{~#*inline "format-date"~}}
+{{date d format="d. MMM, YYYY" lang="fi-FI" tz="Europe/Helsinki"}}
+{{~/inline~}}
+
+<html>
+  <head>
+    <style type="text/css">
+      .email-title {
+        color: #2f880a;
+      }
+    </style>
+  </head>
+  <body>
+    {{#with transaction}}
+    <h1 class="email-title">
+      You have requested to book {{listing.title}}
+    </h1>
+
+    <p>
+      Your booking request for {{listing.title}} from {{> format-date
+      date=booking.start}} to {{> format-date date=booking.end}} is now
+      waiting for provider to accept it.
+    </p>
+
+    <p>
+      The request will be accepted by {{> format-date
+      date=delayed-transition.run-at}}. Otherwise the request will be
+      expired and the money you paid will be refunded to you. The
+      provider can also decline the booking.
+    </p>
+
+    <p>
+      <a href="{{marketplace.url}}/order/{{url-encode id}}/details"
+        >Check the booking details here</a
+      >
+    </p>
+
+    {{/with}}
+
+    <hr />
+
+    <p>
+      You have received this email notification because you are a member
+      of {{marketplace.name}}. If you no longer wish to receive these
+      emails, please contact {{marketplace.name}} team.
+    </p>
+  </body>
+</html>
