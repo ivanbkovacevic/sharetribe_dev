@@ -76,12 +76,16 @@ const analyzeEvent = (event) => {
 
 
     const listingId = resourceId.uuid;
+
+    sdk.listings.show({ id: listingId }).then(res => {
+      console.log(res, 'LISTING')
+    });
     console.log(listingId, 'CurenT values')
+    
+
     const authorId = listing.relationships.author.data.id.uuid;
     const listingState = listing.attributes.state;
     const listingDetails = `listing ID ${listingId}, author ID: ${authorId}`;
-
-
 
     const { state: previousState } = previousValues.attributes || {};
 
