@@ -137,6 +137,46 @@ export const filters = [
   },
 
   {
+    id: 'reviews',
+    label: 'Reviews score',
+    type: 'SelectMultipleFilter',
+    group: 'primary',
+    queryParamNames: ['pub_review_score'],
+    config: {
+      // Optional modes: 'has_all', 'has_any'
+      // https://www.sharetribe.com/api-reference/marketplace.html#extended-data-filtering
+      searchMode: 'has_all',
+
+      // "key" is the option you see in Flex Console.
+      // "label" is set here for this web app's UI only.
+      // Note: label is not added through the translation files
+      // to make filter customizations a bit easier.
+      options: [
+        {
+          key: 'score_1',
+          label: 'Score_1',
+        },
+        {
+          key: 'score_2',
+          label: 'Score_2',
+        },
+        {
+          key: 'score_3',
+          label: 'Score_3',
+        },
+        {
+          key: 'score_4',
+          label: 'Score_4',
+        },
+        {
+          key: 'score_5',
+          label: 'Score_5',
+        },
+      ],
+    },
+  },
+
+  {
     id: 'view',
     label: 'View',
     type: 'SelectSingleFilter',
