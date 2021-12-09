@@ -44,7 +44,7 @@ wishList1 = JSON.stringify(wishList1);
 
 // Create new SDK instance
 const sdk = createInstance({
-  clientId: '050e5159-2efe-45c5-b0e1-f2fcf5a31f70'
+  clientId: '0fd1e949-51a4-4fe0-813e-7d585a661ec5'
 });
 
 
@@ -100,6 +100,7 @@ export const showListing = (listingId) => {
 }
 
 showListing('61b0a902-f813-49a1-8c39-2c5dbfb9c59c')
+
 export const showWishList = async () => {
   let wishListToShow = [];
   return sdk.currentUser.show().then(res => {
@@ -174,17 +175,11 @@ export const showCurrentUser = () => {
   });
 }
 
-// const odmah = () => {
-//     sdk.currentUser.updateProfile({
-//         privateData: {
-//           wishList: [],
-//         },
-//       }, {
-//         expand: true
-//       }).then(res => {
-//         // res.data
-//         console.log('ODMAHHHHHHHHHHHREMOVED LISTING from USER wishList', res)
-//       });
-//     }
 
-//  odmah();
+ export const odmah=(listingId)=>{
+   console.log('bnesto bilo')
+   sdk.listings.show({ id: listingId}).then(res => {
+     console.log('SHOW LISssssssTING', res)
+   });
+ }
+  
