@@ -9,6 +9,13 @@ const { LatLng, LatLngBounds } = sdkTypes;
 // `predictionPlace` (util.types.place) properties.
 const defaultLocations = [
   {
+    id: 'default-belgrade',
+    predictionPlace: {
+      address: 'Belgrade, Serbia',
+      bounds: new LatLngBounds(new LatLng(46.268318, 21.17285), new LatLng(43.0608,18.4722489)),
+    },
+  },
+  {
     id: 'default-auckland',
     predictionPlace: {
       address: 'Auckland, New Zealand',
