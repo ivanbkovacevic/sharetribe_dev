@@ -1,6 +1,13 @@
 require('dotenv').config();
 const fs = require('fs');
 
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+// Create new SDK instance
+const sdk = sharetribeSdk.createInstance({
+  clientId: '0fd1e949-51a4-4fe0-813e-7d585a661ec5'
+});
+
 const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
 
 const integrationSdk = flexIntegrationSdk.createInstance({
@@ -60,6 +67,14 @@ const analyzeEvent = (event) => {
         const listingDetails = `listing ID ${listingId}, author ID: ${authorId}`;
         const { state: previousState } = previousValues.attributes || {};
 
+        const cekaj =  () => {
+           sdk.listings.show({ id: listingId }).then(res => {
+            console.log(res, '-------------LISTING--------------------')
+          });
+          console.log(previousValues.attributes.rating)
+        }
+        cekaj();
+
         const isPublic = reviewState === "public";
         const isPending = reviewState === "pending";
         const ratingOverAllPoints= ratingOverAllPoints + newRating;
@@ -71,62 +86,36 @@ const analyzeEvent = (event) => {
                 if (isPublic) {
                     console.log(`A review has been created ${listingDetails}`)
 
-                    integrationSdk.listings.update({
-                        id: new UUID(listingId),
-                          metadata: {
-                          rating: rating
-                        },
-                      }, {
-                        expand: true,
-                      }).then(res => {
-                        // res.data
-                      });
+                    // integrationSdk.listings.update({
+                    //     id: new UUID(listingId),
+                    //       metadata: {
+                    //       rating: rating
+                    //     },
+                    //   }, {
+                    //     expand: true,
+                    //   }).then(res => {
+                    //     // res.data
+                    //   });
+                     sdk.listings.show({ id: listingId }).then(res => {
+                      console.log(res, '-------------LISTING CREATED--------------------')
+                    });
+                    console.log(previousValues.attributes.rating)
 
                 }
                 break;
             case "review/updated":
                 if (isPublic) {
-                    integrationSdk.listings.update({
-                        id: new UUID(listingId),
-                          metadata: {
-                          rating: rating
-                        },
-                      }, {
-                        expand: true,
-                      }).then(res => {
-                        // res.data
-                      });
-                    console.log(`A review has been updated ${listingDetails}`)
+                  console.log(res, '-------------LISTING UPDATED--------------------')
                 }
                 break;
             case "review/deleted":
                 if (isPublic) {
-                    integrationSdk.listings.update({
-                        id: new UUID(listingId),
-                          metadata: {
-                          rating: rating
-                        },
-                      }, {
-                        expand: true,
-                      }).then(res => {
-                        // res.data
-                      });
-                    console.log(`A review has been deleted ${listingDetails}`)
+                  console.log(res, '-------------LISTING DELATED--------------------')
                 }
                 break;
             case "review/pending":
                 if (isPending) {
-                    integrationSdk.listings.update({
-                        id: new UUID(listingId),
-                          metadata: {
-                          rating: rating
-                        },
-                      }, {
-                        expand: true,
-                      }).then(res => {
-                        // res.data
-                      });
-                    console.log(`A review is pending ${listingDetails}`)
+                  console.log(res, '-------------LISTING PENDING--------------------')
                 }
                 break;
         }
