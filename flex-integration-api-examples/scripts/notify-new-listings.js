@@ -83,10 +83,7 @@ const analyzeEvent = (event) => {
       // await sdk.listings.show({ id: listingId }).then(res => {
       //   console.log(res, 'L--------------------')
       // });
-    
       console.log(previousValues.attributes.description+" "+listing.attributes.description)
-    
-
     }
     cekaj();
 
