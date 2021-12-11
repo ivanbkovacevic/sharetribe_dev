@@ -107,6 +107,7 @@ export const filters = [
       // "label" is set here for this web app's UI only.
       // Note: label is not added through the translation files
       // to make filter customizations a bit easier.
+      schemaType: 'multi-enum',
       options: [
         {
           key: 'terrace',
@@ -141,7 +142,7 @@ export const filters = [
     label: 'Reviews score',
     type: 'SelectMultipleFilter',
     group: 'primary',
-    queryParamNames: ['pub_rating'],
+    queryParamNames: ['meta_rating'],
     config: {
       // Optional modes: 'has_all', 'has_any'
       // https://www.sharetribe.com/api-reference/marketplace.html#extended-data-filtering
@@ -151,25 +152,26 @@ export const filters = [
       // "label" is set here for this web app's UI only.
       // Note: label is not added through the translation files
       // to make filter customizations a bit easier.
+      schemaType: 'multi-enum',
       options: [
         {
-          key: 'score_1',
+          key: 1,
           label: 'Score_1',
         },
         {
-          key: 'score_2',
+          key: 2,
           label: 'Score_2',
         },
         {
-          key: 'score_3',
+          key: 3,
           label: 'Score_3',
         },
         {
-          key: 'score_4',
+          key: 4,
           label: 'Score_4',
         },
         {
-          key: 'score_5',
+          key: 5,
           label: 'Score_5',
         },
       ],

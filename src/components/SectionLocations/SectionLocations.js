@@ -47,7 +47,7 @@ const SectionLocations = props => {
 
   const classes = classNames(rootClassName || css.root, className);
 
-  kocha.odmah("61b20923-6312-428b-bb96-94497b562325");
+  kocha.odmah("61b2069c-b691-4d6f-ab46-c55dff993131");
   return (
     <div className={classes}>
       <div className={css.title}>

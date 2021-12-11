@@ -181,5 +181,9 @@ export const showCurrentUser = () => {
    sdk.listings.show({ id: listingId}).then(res => {
      console.log('SHOW LISssssssTING', res)
    });
+
+  //  sdk.listings.query({meta_rating:3 }).then(res => {
+  //   console.log('SHOW LISssssssTING', res)
+  // });
  }
   

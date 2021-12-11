@@ -1,12 +1,12 @@
 require('dotenv').config();
 const fs = require('fs');
 
-const sharetribeSdk = require('sharetribe-flex-sdk');
+// const sharetribeSdk = require('sharetribe-flex-sdk');
 
-// Create new SDK instance
-const sdk = sharetribeSdk.createInstance({
-  clientId: '0fd1e949-51a4-4fe0-813e-7d585a661ec5'
-});
+// // Create new SDK instance
+// const sdk = sharetribeSdk.createInstance({
+//     clientId: '0fd1e949-51a4-4fe0-813e-7d585a661ec5'
+// });
 
 const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
 
@@ -52,71 +52,91 @@ const loadLastEventSequenceId = () => {
     }
 };
 
+let rating = {
+    ratingScore: 0,
+    ratingAllPoints: 0,
+    numbOfTimesRated: 1
+}
+
 const analyzeEvent = (event) => {
-    if (event.attributes.resourceType == "ofProvider") {
+    if (event.attributes.resourceType == "review") {
         const {
             resourceId,
             resource: listing,
             previousValues,
             eventType,
         } = event.attributes;
+
         const listingId = resourceId.uuid;
         const authorId = listing.relationships.author.data.id.uuid;
         const reviewState = listing.attributes.state;
-     
+
         const listingDetails = `listing ID ${listingId}, author ID: ${authorId}`;
         const { state: previousState } = previousValues.attributes || {};
 
-        const cekaj =  () => {
-           sdk.listings.show({ id: listingId }).then(res => {
-            console.log(res, '-------------LISTING--------------------')
-          });
-          console.log(previousValues.attributes.rating)
-        }
-        cekaj();
+        const listingIdRelationship = listing.relationships.listing.data.id.uuid;
+        //from review object
+        let currentReviewRating = listing.attributes.rating;
+        //
 
-        const isPublic = reviewState === "public";
-        const isPending = reviewState === "pending";
-        const ratingOverAllPoints= ratingOverAllPoints + newRating;
-        const ratingOverAllTimes= ratingOverAllTimes + 1;
-        const rating= ratingOverAllPoints / ratingOverAllTimes;
+        
+            integrationSdk.listings.show({ id: listingIdRelationship }).then((res)=>{
+                if (res.data.data.attributes.publicData.numbOfTimesRated > 0) {
+                    rating.ratingScore = res.data.data.attributes.publicData.rating;
+                    rating.ratingAllPoints = res.data.data.attributes.publicData.ratingAllPoints;
+                    rating.numbOfTimesRated = res.data.data.attributes.publicData.numbOfTimesRated;
+                }
+
+            })    
 
         switch (eventType) {
             case "review/created":
-                if (isPublic) {
-                    console.log(`A review has been created ${listingDetails}`)
+                rating.ratingAllPoints += currentReviewRating;
+                rating.numbOfTimesRated += 1;
+                rating.ratingScore = Math.floor(ratingAllPoints / numbOfTimesRated);
 
-                    // integrationSdk.listings.update({
-                    //     id: new UUID(listingId),
-                    //       metadata: {
-                    //       rating: rating
-                    //     },
-                    //   }, {
-                    //     expand: true,
-                    //   }).then(res => {
-                    //     // res.data
-                    //   });
-                     sdk.listings.show({ id: listingId }).then(res => {
-                      console.log(res, '-------------LISTING CREATED--------------------')
-                    });
-                    console.log(previousValues.attributes.rating)
-
-                }
+                integrationSdk.listings.update({
+                    id: listingIdRelationship,
+                    publicData: {
+                        rating: rating.ratingScore,
+                        ratingAllPoints: rating.ratingAllPoints,
+                        numbOfTimesRated: rating.numbOfTimesRated,
+                    }
+                }).then(res => {
+                })
+                console.log('-------------LISTING CREATED--------------------')
                 break;
+
             case "review/updated":
-                if (isPublic) {
-                  console.log(res, '-------------LISTING UPDATED--------------------')
-                }
+                rating.ratingAllPoints += currentReviewRating;
+                rating.ratingScore = Math.floor(rating.ratingAllPoints / rating.numbOfTimesRated);
+                integrationSdk.listings.update({
+                    id: listingIdRelationship,
+                    publicData: {
+                        rating: rating.ratingScore,
+                        ratingAllPoints: rating.ratingAllPoints,
+                        numbOfTimesRated: rating.numbOfTimesRated,
+                    }
+                }).then(res => {
+                    console.log(res.publicData)
+                })
+                console.log('-------------LISTING UPDATED--------------------')
+                console.log('-------------LISTING UPDATED--------------------')
                 break;
             case "review/deleted":
-                if (isPublic) {
-                  console.log(res, '-------------LISTING DELATED--------------------')
-                }
-                break;
-            case "review/pending":
-                if (isPending) {
-                  console.log(res, '-------------LISTING PENDING--------------------')
-                }
+                rating.ratingAllPoints -= currentReviewRating;
+                rating.numbOfTimesRated -= 1;
+                rating.ratingScore = Math.floor(rating.ratingAllPoints / rating.numbOfTimesRated);
+                integrationSdk.listings.update({
+                    id: listingIdRelationship,
+                    publicData: {
+                        rating: rating.ratingScore,
+                        ratingAllPoints: rating.ratingAllPoints,
+                        numbOfTimesRated: rating.numbOfTimesRated,
+                    }
+                }).then(res => {
+                })
+                console.log('-------------LISTING DELATED--------------------')
                 break;
         }
     }
